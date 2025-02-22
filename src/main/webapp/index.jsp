@@ -35,7 +35,7 @@
                 hour=calendar.get(java.util.Calendar.HOUR_OF_DAY); String greeting=(hour < 12) ? "Good Morning"
                 : "Good Afternoon" ; %>
                 <h1>
-                    <%= greeting %>, Shrijana! Welcome to COMP367
+                    <%= greeting %>, Shrijana Poudel! Welcome to COMP367
                 </h1>
         </div>
         </div>
