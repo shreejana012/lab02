@@ -1,29 +1,88 @@
+// pipeline {
+//     agent any
+    
+//     stages {
+//         stage('Checkout') {
+//             steps {
+//                 checkout scm
+//             }
+//         }
+//         stage('Build') {
+//             steps {
+//                 sh '/opt/homebrew/bin/mvn clean package'
+//             }
+//         }
+//         stage('Archive') {
+//             steps {
+//                 archiveArtifacts artifacts: 'target/*.war', followSymlinks: false
+//             }
+//         }
+//     }
+//     post {
+//             success {
+//             echo 'Build successful! The WAR file is ready for deployment.'
+//             }
+//             failure {
+//                 echo 'Build failed! Please check the logs for details.'
+//         }
+//     } 
+// }
+
+
 pipeline {
     agent any
-    
+
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
+
         stage('Build') {
             steps {
                 sh '/opt/homebrew/bin/mvn clean package'
             }
         }
+
         stage('Archive') {
             steps {
                 archiveArtifacts artifacts: 'target/*.war', followSymlinks: false
             }
         }
-    }
-    post {
-            success {
-            echo 'Build successful! The WAR file is ready for deployment.'
+
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials',
+                                              passwordVariable: 'DOCKER_PASSWORD',
+                                              usernameVariable: 'DOCKER_USERNAME')]) {
+                    sh 'echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin'
+                }
             }
-            failure {
-                echo 'Build failed! Please check the logs for details.'
         }
-    } 
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t shreejana012/webapp:latest .'
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                sh 'docker push shreejana012/webapp:latest'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build successful! The WAR file is ready for deployment.'
+        }
+        failure {
+            echo 'Build failed! Please check the logs for details.'
+        }
+        always {
+            sh 'docker logout'
+        }
+    }
 }
