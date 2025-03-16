@@ -51,6 +51,12 @@ pipeline {
             }
         }
 
+        stage('log path') {
+            steps {
+                echo '$PATH'
+            }
+        }
+
         stage('Docker Login') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials',
