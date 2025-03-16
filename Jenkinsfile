@@ -53,7 +53,7 @@ pipeline {
 
         stage('log path') {
             steps {
-                sh 'echo $PATH'
+                sh '$PATH=$PATH:/usr/local/bin/docker'
             }
         }
 
