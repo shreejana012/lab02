@@ -53,7 +53,7 @@ pipeline {
 
         stage('log path') {
             steps {
-                sh '$PATH=/usr/local/bin:$PATH'
+                sh 'PATH=/usr/local/bin:$PATH'
             }
         }
 
