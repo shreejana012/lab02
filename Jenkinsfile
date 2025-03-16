@@ -53,7 +53,7 @@ pipeline {
 
         stage('log path') {
             steps {
-                echo '$PATH'
+                sh 'echo $PATH'
             }
         }
 
